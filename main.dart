@@ -15,85 +15,101 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Material(
-        child: TestWithState(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[Morpion()],
+        ),
       ),
     );
   }
 }
 
-class Test extends StatelessWidget {
-  // private
-  final String _title;
+class Morpion extends StatefulWidget {
+  @override
+  _MorpionState createState() => _MorpionState();
+}
 
-  const Test({Key key, @required String title})
-      : _title = title,
-        super(key: key);
+class _MorpionState extends State<Morpion> {
+  List _grille;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initialiserGrille();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(
-          color: Colors.blue,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(_title),
-          ],
-        ));
+      child: Column(
+        children: <Widget>[
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              construireColonne(0),
+              construireColonne(1),
+              construireColonne(2),
+            ],
+          ),
+          InkWell(
+            onTap: () {
+              initialiserGrille();
+            },
+            child: Container(
+                width: 250,
+                height: 50,
+                decoration: BoxDecoration(color: Colors.yellow),
+                child: Center(
+                    child: Text(
+                  'Réinitialiser',
+                  style: TextStyle(fontSize: 18),
+                ))),
+          )
+        ],
+      ),
+    );
   }
-}
 
-class TestWithState extends StatefulWidget {
-  @override
-  _TestWithStateState createState() => _TestWithStateState();
-}
-
-class _TestWithStateState extends State<TestWithState> {
-  int _compteur;
-
-  @override
-  void initState() {
-    super.initState();
+  void initialiserGrille() {
     setState(() {
-      _compteur = 0;
+      _grille = [
+        ['', '', ''],
+        ['', '', ''],
+        ['', '', ''],
+      ];
     });
   }
 
-  void incrementerCompteur() {
-    setState(() {
-      _compteur = _compteur + 1;
-    });
-  }
-
-  int renvoyerNombre() {
-    return 2;
-  }
-
-  int renvoyerNombreBis() => 2;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget construireColonne(int colonne) {
     return Column(
       children: <Widget>[
-        Container(
-          padding: EdgeInsets.only(top: 40),
-            child: Text(
-          'Widget with state : ' + _compteur.toString(),
-          style: TextStyle(fontSize: 18),
-        )),
-        Text('!'),
-        InkWell(
-          onTap: () => incrementerCompteur(),
-          child: Container(
-            width: 200,
-            height: 50,
-            decoration: BoxDecoration(color: Colors.red),
-            child: Text('Cliquez moi'),
-          ),
-        )
+        construireCellule(0, colonne),
+        construireCellule(1, colonne),
+        construireCellule(2, colonne),
       ],
+    );
+  }
+
+  Widget construireCellule(int ligne, int colonne) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _grille[ligne][colonne] = 'x';
+        });
+      },
+      child: Container(
+        width: 100,
+        height: 100,
+        decoration: BoxDecoration(color: Colors.grey),
+        margin: EdgeInsets.only(bottom: 5, right: 5),
+        child: Center(
+            child: Text(
+          _grille[ligne][colonne],
+          style: TextStyle(fontSize: 40, fontWeight: FontWeight.w900),
+        )),
+      ),
     );
   }
 }
